@@ -9,6 +9,8 @@ Modul ``shipment_tracking`` berfungsi untuk memantau setiap update pengiriman se
 Proyek ini menjalankan Odoo 19 dengan PostgreSQL 16 menggunakan Docker Compose. Addons kustom, log, dan konfigurasi Odoo di-mount dari host.
 
 ### Struktur Folder
+
+```
 odoo19/
 ├── odoo/                   # Kode sumber Odoo
 ├── custom_addons/          # Modul Odoo kustom
@@ -16,6 +18,7 @@ odoo19/
 │   └── docker-compose.yml
 ├── logs/                   # Log Odoo
 └── data/                   # Data PostgreSQL
+```
 
 ## Prasyarat
 
