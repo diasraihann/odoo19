@@ -1,0 +1,174 @@
+<odoo>
+    <!-- List View -->
+    <record id="view_logistic_shipment_list" model="ir.ui.view">
+        <field name="name">logistic.shipment.list</field>
+        <field name="model">logistic.shipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="shipment_id"/>
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="sender"/>
+                <field name="receiver"/>
+                <field name="description"/>
+                <field name="weight"/>
+                <field name="due_date"/>
+                <field name="update_date"/>
+                <field name="status" widget="badge" 
+                       decoration-info="status == 'draft'"
+                       decoration-warning="status == 'in_transit'"
+                       decoration-success="status == 'delivered'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_logistic_shipment_form" model="ir.ui.view">
+        <field name="name">logistic.shipment.form</field>
+        <field name="model">logistic.shipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="draft,in_transit,delivered"
+                           readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="shipment_id" class="oe_edit_only"/>
+                        <h1>
+                            <field name="shipment_id" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Shipment Information">
+                            <field name="name"/>
+                            <field name="service_type"/>
+                            <field name="weight"/>
+                            <field name="due_date"/>
+                            <field name="update_date" readonly="1"/>
+                            <field name="description"/>
+                        </group>
+                        <group string="Parties">
+                            <field name="sender"/>
+                            <field name="receiver"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Tracking History">
+                            <field name="tracking_id">
+                                <list>
+                                    <field name="tracking_id"/>
+                                    <field name="timestamp"/>
+                                    <field name="drop_point"/>
+                                    <field name="location"/>
+                                    <field name="status" widget="badge"
+                                           decoration-info="status == 'drop_off'"
+                                           decoration-warning="status in ('in_transit', 'arrived_dc', 'out_for_delivery')"
+                                           decoration-success="status == 'delivered'"/>
+                                    <field name="responsible"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="tracking_id" readonly="1"/>
+                                            <field name="timestamp"/>
+                                            <field name="drop_point"/>
+                                            <field name="location"/>
+                                            <field name="status"/>
+                                            <field name="note"/>
+                                            <field name="responsible"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_logistic_shipment_search" model="ir.ui.view">
+        <field name="name">logistic.shipment.search</field>
+        <field name="model">logistic.shipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="shipment_id"/>
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="sender"/>
+                <field name="receiver"/>
+                <field name="description"/>
+                <field name="status"/>
+                <field name="due_date"/>
+                
+                <!-- Filter preset -->
+                <filter string="Draft" name="filter_draft" domain="[('status','=','draft')]"/>
+                <filter string="In Transit" name="filter_in_transit" domain="[('status','=','in_transit')]"/>
+                <filter string="Delivered" name="filter_delivered" domain="[('status','=','delivered')]"/>
+                
+                <separator/>
+                
+                <!-- Filter by Service Type -->
+                <filter string="Regular" name="filter_regular" domain="[('service_type','=','regular')]"/>
+                <filter string="Express" name="filter_express" domain="[('service_type','=','express')]"/>
+                <filter string="Cargo" name="filter_cargo" domain="[('service_type','=','cargo')]"/>
+                
+                <separator/>
+                
+                <!-- Filter by Shipment Reference -->
+                <filter string="Shopee" name="filter_shopee" domain="[('name','=','shopee')]"/>
+                <filter string="Tokopedia" name="filter_tokopedia" domain="[('name','=','tokopedia')]"/>
+                <filter string="Lazada" name="filter_lazada" domain="[('name','=','lazada')]"/>
+                <filter string="B2B" name="filter_b2b" domain="[('name','=','b2b')]"/>
+                <filter string="C2C" name="filter_c2c" domain="[('name','=','c2c')]"/>
+                
+                <separator/>
+                
+                <!-- Filter tanggal -->
+                <filter string="Overdue" name="filter_overdue" 
+                        domain="[('due_date','&lt;', context_today().strftime('%Y-%m-%d')), ('status','!=','delivered')]"/>
+                <filter string="Due Today" name="filter_due_today" 
+                        domain="[('due_date','=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Due This Week" name="filter_due_week" 
+                        domain="[('due_date','&gt;=', (context_today() - relativedelta(weeks=0)).strftime('%Y-%m-%d')),
+                                ('due_date','&lt;=', (context_today() + relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                
+                <!-- Group By -->
+                <filter string="Status" name="group_status" context="{'group_by':'status'}"/>
+                <filter string="Service Type" name="group_service_type" context="{'group_by':'service_type'}"/>
+                <filter string="Channel" name="group_name" context="{'group_by':'name'}"/>
+                <filter string="Sender" name="group_sender" context="{'group_by':'sender'}"/>
+                <filter string="Due Date" name="group_due_date" context="{'group_by':'due_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="logistic_shipment_action" model="ir.actions.act_window">
+        <field name="name">Shipments</field>
+        <field name="res_model">logistic.shipment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_logistic_shipment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first shipment
+            </p>
+            <p>
+                Track your shipments and monitor their delivery status.
+            </p>
+        </field>
+    </record>
+
+    <!-- Root Menu -->
+    <menuitem id="logistic_root_menu" name="Logistics" sequence="10"/>
+
+    <!-- Shipment Menu -->
+    <menuitem id="logistic_shipment_menu" name="Shipments"
+              parent="logistic_root_menu" action="logistic_shipment_action" sequence="1"/>
+</odoo>

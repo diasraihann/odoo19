@@ -1,0 +1,17 @@
+<odoo>
+    <record id="demo_shipment_1" model="logistic.shipment">
+        <field name="name">SHP001</field>
+        <field name="sender">Alice</field>
+        <field name="receiver">Bob</field>
+        <field name="weight">12.5</field>
+        <field name="status">draft</field>
+    </record>
+
+    <record id="demo_shipment_2" model="logistic.shipment">
+        <field name="name">SHP002</field>
+        <field name="sender">Charlie</field>
+        <field name="receiver">David</field>
+        <field name="weight">7.2</field>
+        <field name="status">in_transit</field>
+    </record>
+</odoo>
