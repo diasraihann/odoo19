@@ -99,6 +99,7 @@ deactivate
 ```
 
 4. Buka terminal di folder config:
+
 ```cd ~/odoo19/config```
 
 5. Initialize database dan jalankan container:
@@ -110,6 +111,7 @@ docker compose up -d
 
 
 6. Cek container yang sedang berjalan:
+
 ```docker compose ps```
 
 ## Akses Layanan
