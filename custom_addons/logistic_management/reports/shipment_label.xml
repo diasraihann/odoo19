@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Paper Format untuk Label -->
+    <record id="paperformat_label" model="report.paperformat">
+        <field name="name">Shipment Label Format</field>
+        <field name="format">custom</field>
+        <field name="page_height">148</field>
+        <field name="page_width">105</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action untuk Shipment Label -->
+    <record id="shipment_label" model="ir.actions.report">
+        <field name="name">Shipment Label</field>
+        <field name="model">logistic.shipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">logistic_management.shipment_label_document</field>
+        <field name="report_file">logistic_management.shipment_label_document</field>
+        <field name="binding_model_id" ref="model_logistic_shipment"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_label"/>
+    </record>
+
+    <!-- Template Report Shipment Label -->
+    <template id="shipment_label_document">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page" style="padding: 5px;">
+                    <div style="border: 3px solid black; padding: 15px; height: 100%;">
+                        
+                        <!-- Header dengan Logo -->
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <h4 style="margin: 5px 0; font-weight: bold;">SHIPMENT LABEL</h4>
+                        </div>
+                        <hr style="border-top: 2px solid black; margin: 10px 0;"/>
+                        
+                        <!-- Shipment ID -->
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <div style="font-size: 11pt; font-weight: bold;">
+                                <span t-field="o.shipment_id"/>
+                            </div>
+                        </div>
+
+                        <!-- SERVICE TYPE & WEIGHT -->
+                        <div style="background-color: #f0f0f0; padding: 8px; margin-bottom: 10px; border-radius: 3px;">
+                            <table style="width: 100%; font-size: 10pt;">
+                                <tr>
+                                    <td style="width: 50%;"><strong>Service:</strong></td>
+                                    <td style="width: 50%;"><strong>Weight:</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span t-field="o.service_type" style="text-transform: uppercase; font-weight: bold;"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.weight"/> kg
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Nama Pengirim -->
+                        <div style="margin-bottom: 10px; font-size: 10pt;">
+                            <strong style="font-size: 11pt;">FROM:</strong>
+                            <div style="margin-left: 10px; margin-top: 3px;">
+                                <div style="font-weight: bold; font-size: 11pt;">
+                                    <span t-field="o.sender"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="border-top: 1px dashed #999; margin: 8px 0;"/>
+
+                        <!-- Nama Penerima -->
+                        <div style="margin-bottom: 10px; font-size: 10pt;">
+                            <strong style="font-size: 11pt;">TO:</strong>
+                            <div style="margin-left: 10px; margin-top: 3px;">
+                                <div style="font-weight: bold; font-size: 11pt;">
+                                    <span t-field="o.receiver"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="border-top: 1px solid #ccc; margin: 10px 0;"/>
+                        
+                        <!-- Channel / Marketplace -->
+                        <div style="font-size: 9pt; margin-bottom: 5px;">
+                            <strong>Channel:</strong> 
+                            <span t-field="o.name" style="background-color: #ffe5b4; padding: 2px 5px; border-radius: 3px; text-transform: capitalize;"/>
+                        </div>
+
+                        <!-- Description -->
+                        <div t-if="o.description" style="font-size: 9pt; margin-bottom: 5px;">
+                            <strong>Description:</strong> 
+                            <span t-field="o.description"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

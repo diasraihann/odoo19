@@ -1,8 +1,58 @@
-# Logistic Management ERP
+# Logistic Management ERP (Use Case)
 
-Modul ``logistic_shipment`` dan ``shipment_tracking`` dibuat untuk mempermudah manajemen pengiriman barang di Odoo. Modul ``logistic_shipment`` berfokus pada pembuatan dan pengelolaan pengiriman, termasuk menentukan channel, jenis layanan, pengirim, penerima, berat, deskripsi barang, serta perhitungan otomatis tanggal jatuh tempo berdasarkan tipe layanan. Modul ini juga menampilkan status pengiriman terakhir secara otomatis berdasarkan data tracking.
+Proyek ini adalah studi kasus (use case) yang mencontohkan bagaimana sistem manajemen logistik dapat dibuat menggunakan Odoo 19. Modul ini tidak ditujukan untuk penggunaan produksi, melainkan sebagai contoh arsitektur, alur kerja, dan fitur dasar yang umum digunakan pada sistem logistik.
 
-Modul ``shipment_tracking`` berfungsi untuk memantau setiap update pengiriman secara detail, mencatat timestamp, drop point, lokasi, status, catatan, dan penanggung jawab. Modul ini terintegrasi dengan ``logistic_shipment`` sehingga setiap update tracking otomatis memperbarui status shipment. Dengan kombinasi kedua modul ini, pengguna dapat membuat shipment, memantau status pengiriman secara real-time, dan melihat history pergerakan barang, sehingga proses logistik menjadi lebih efisien dan transparan.
+## Modul Utama
+
+1. logistic_shipment
+Digunakan untuk membuat dan mengelola data pengiriman.
+
+Fitur:
+- Pengaturan channel / marketplace (Shopee, Tokopedia, dll)
+- Pemilihan service type (regular, express, cargo)
+- Data pengirim & penerima
+- Berat & deskripsi barang
+- Perhitungan otomatis due date berdasarkan service type
+- Status pengiriman yang berubah otomatis berdasarkan tracking terbaru
+
+2. shipment_tracking
+Digunakan untuk mencatat setiap update perjalanan paket.
+
+Data yang ditracking:
+- Timestamp
+- Drop point
+- Lokasi
+- Status (drop_off, in_transit, delivered, dll)
+- Catatan tambahan
+- Petugas yang menangani
+- Tracking terhubung langsung dengan shipment untuk menampilkan status real-time.
+
+## Fitur Tambahan: Laporan (Report PDF)
+
+Use case ini juga menyertakan contoh implementasi dua jenis laporan yang dapat diunduh dari Odoo.
+
+1. Shipment Detail Report
+
+Detail laporan mengenai shipment.
+
+Berisi:
+- Informasi shipment
+- Tanggal & status
+- Nama pengirim & penerima
+- Deskripsi Barang
+- Tracking History
+
+2. Shipment Label
+
+Label kecil untuk ditempelkan ke paket.
+
+Berisi:
+- Shipment ID
+- Nama pengirim & penerima
+- Service type
+- Berat barang
+- Channel
+- Deskripsi barang
 
 ## Setup Odoo 19 dengan Docker
 
@@ -28,18 +78,48 @@ odoo19/
 
 ## Langkah Instalasi
 
-1. Buka terminal di folder config:
+1. Install wkhtmltopdf (Konversi HTML menjadi pdf)
+```
+sudo apt update
+sudo apt install -y wkhtmltopdf
+```
+
+2. Install Python3
+```
+sudo apt install python3-pip
+```
+
+3. Install passlib (dengan venv)
+```
+source odoo19/odoo/venv/bin/activate 
+pip install passlib
+deactivate
+```
+
+4. Buka terminal di folder config:
 ```cd ~/odoo19/config```
 
-2. Build dan jalankan container:
-```docker compose up -d```
+5. Initialize database dan jalankan container:
+```
+docker compose up -d
+docker exec -it config-odoo-1 odoo -c /etc/odoo/odoo.conf -d ODOO_DB -i base --stop-after-init
+docker compose up -d
+```
 
-3. Cek container yang sedang berjalan:
+
+6. Cek container yang sedang berjalan:
 ```docker compose ps```
 
 ## Akses Layanan
 
-1. Odoo: http://localhost:8069
+1. Odoo: 
+    ```
+    url: http://localhost:8069
+    email: admin
+    password: admin
+    database: ODOO_DB
+    ```
+    
 2. PostgreSQL: 
     ```
     host: db, 
