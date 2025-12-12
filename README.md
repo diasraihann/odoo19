@@ -5,6 +5,7 @@ Proyek ini adalah studi kasus (use case) yang mencontohkan bagaimana sistem mana
 ## Modul Utama
 
 1. logistic_shipment
+
 Digunakan untuk membuat dan mengelola data pengiriman.
 
 Fitur:
@@ -16,6 +17,7 @@ Fitur:
 - Status pengiriman yang berubah otomatis berdasarkan tracking terbaru
 
 2. shipment_tracking
+
 Digunakan untuk mencatat setiap update perjalanan paket.
 
 Data yang ditracking:
@@ -143,5 +145,6 @@ docker compose up -d
 ```
 
 ## Stop / Hapus Container
+
 Perintah ini menghentikan dan menghapus container, tetapi volume persisten tetap ada.
 ```docker compose down```
